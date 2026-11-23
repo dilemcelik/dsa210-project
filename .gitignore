@@ -1,0 +1,13 @@
+# PRIVACY: raw and row-level personal data must NEVER be committed
+data/raw/*
+!data/raw/README.md
+!data/raw/cycles.example.csv
+data/processed/*
+!data/processed/.gitkeep
+*.xlsx
+*.xls
+__pycache__/
+*.pyc
+.venv/
+.ipynb_checkpoints/
+.DS_Store
