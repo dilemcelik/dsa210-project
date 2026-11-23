@@ -1,0 +1,5 @@
+phase,days,spend_disc_w,spend_all_w,n_purchases,n_late,n_delivery,spend_cafe
+Menstrual,60,831.6,1377.749,3.767,0.583,0.133,112.033
+Follicular,96,713.331,1381.764,3.667,0.542,0.156,180.312
+Ovulatory,36,739.412,1835.087,3.528,0.389,0.139,106.278
+Luteal,156,831.389,1413.029,3.756,0.628,0.167,96.032
