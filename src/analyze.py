@@ -23,8 +23,8 @@ FIG.mkdir(exist_ok=True)
 
 LUTEAL_LEN = 14          # assumption: ovulation ~14 days before next period
 MENSES_DAYS = 5          # assumption: bleeding length not recorded, first 5 days
-DISCRETIONARY = ["Kafe", "Yemek siparişi", "Dışarıda yemek", "Online alışveriş",
-                 "Giyim/kozmetik", "Eğlence/etkinlik", "Otomat"]
+DISCRETIONARY = ["Cafe", "Food delivery", "Eating out", "Online shopping",
+                 "Clothing & cosmetics", "Entertainment & events", "Vending"]
 PHASES = ["Menstrual", "Follicular", "Ovulatory", "Luteal"]
 RNG = np.random.default_rng(210)
 
@@ -77,8 +77,8 @@ def daily_metrics(tx: pd.DataFrame, days: pd.DatetimeIndex) -> pd.DataFrame:
     g["spend_disc"] = p[p.disc].groupby("date").spend.sum()
     g["n_purchases"] = p.groupby("date").size()
     g["n_late"] = p[p.late].groupby("date").size()
-    g["n_delivery"] = p[p.category == "Yemek siparişi"].groupby("date").size()
-    g["spend_cafe"] = p[p.category == "Kafe"].groupby("date").spend.sum()
+    g["n_delivery"] = p[p.category == "Food delivery"].groupby("date").size()
+    g["spend_cafe"] = p[p.category == "Cafe"].groupby("date").spend.sum()
     g = g.fillna(0.0)
     # winsorise heavy tails (one-off flights, tickets) at the 99th percentile
     for c in ["spend_all", "spend_disc"]:

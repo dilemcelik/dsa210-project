@@ -7,6 +7,7 @@ Output: data/aggregated/cafe_robustness.csv
 import sys
 from pathlib import Path
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from scipy import stats
@@ -60,7 +61,7 @@ def main():
     tx = pd.read_csv(A.TX, parse_dates=["ts"])
     lab = A.label_days(tx.ts.min().normalize(), tx.ts.max().normalize())
     df = lab.merge(A.daily_metrics(tx, pd.DatetimeIndex(lab.date)), on="date")
-    p = tx[(tx["type"] == "purchase") & (tx.category == "Kafe")].copy()
+    p = tx[(tx["type"] == "purchase") & (tx.category == "Cafe")].copy()
     p["date"] = p.ts.dt.normalize()
     p["campus"] = p.merchant.str.upper().str.contains("SABANC")
     df["cafe_campus"] = df.date.map(-p[p.campus].groupby("date").tutar.sum()).fillna(0.0)
@@ -76,7 +77,7 @@ def main():
     scen = [
         ("1 baseline (all days)", "spend_cafe", allday),
         ("2 without trip days", "spend_cafe", ~trip),
-        ("3 without trips + stated break (11-28 Jun)", "spend_cafe", ~trip & ~brk),
+        ("3 without trips + gap between terms", "spend_cafe", ~trip & ~brk),
         ("4 without trips + whole summer (Jun-Aug)", "spend_cafe", ~trip & ~summer),
         ("5 weekdays only, no trips/break", "spend_cafe", weekday & ~trip & ~brk),
         ("6 campus cafes only, no trips/break", "cafe_campus", ~trip & ~brk),
@@ -93,6 +94,21 @@ def main():
             rows.append(dict(scenario=name, detrended=dt, **r))
     out = pd.DataFrame(rows)
     out.round(3).to_csv(A.AGG / "cafe_robustness.csv", index=False)
+    # ---- forest plot: how the cafe effect shrinks as confounds are removed (TL scenarios, raw)
+    f = out[(~out.detrended) & out.scenario.str[:2].str.strip().astype(int).between(1, 8)].iloc[::-1]
+    fig, ax = plt.subplots(figsize=(8.2, 4.4))
+    y = np.arange(len(f))
+    ax.hlines(y, f.ci95_lo, f.ci95_hi, color="#9fb8b8", lw=2.5)
+    ax.plot(f.mean_diff, y, "o", color=A.ACCENT, ms=8, markeredgecolor="white", markeredgewidth=1.5)
+    ax.axvline(0, color=A.INK, lw=1)
+    ax.set_yticks(y)
+    ax.set_yticklabels([x[2:].strip() for x in f.scenario], fontsize=8.5)
+    ax.set_xlabel("Cafe spend, luteal minus follicular (TL/day).  Dot = mean difference, line = 95% CI")
+    ax.set_title("The cafe 'effect' fades once I account for my schedule", loc="left", fontweight="bold")
+    ax.grid(axis="y", visible=False)
+    fig.savefig(A.FIG / "06_cafe_robustness.png")
+    plt.close(fig)
+
     pd.set_option("display.width", 250)
     print(out.drop(columns=["luteal_days", "follicular_days"]).round(2).to_string())
     print(out[["scenario", "detrended", "luteal_days", "follicular_days"]].drop_duplicates("scenario").to_string())

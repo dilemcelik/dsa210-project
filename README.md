@@ -60,6 +60,11 @@ observations. Instead:
 - Repeated after removing slow seasonal drift (29-day rolling mean).
 
 ## Results
+**Key results at a glance**
+- Total card spend: **552,701 TL** in 12 months; the biggest categories are eating out (16%) and clothing & cosmetics (15%).
+- **H1, H2: not supported.** No reliable difference in discretionary spending or late-night buying between cycle phases.
+- **H3: not supported either.** Food delivery shows nothing. Cafe spending *looked* lower in the luteal phase, but the pattern fades once I account for my schedule (see below).
+
 ![categories](figures/01_categories.png)
 ![hours](figures/02_hour_of_day.png)
 
@@ -95,15 +100,43 @@ campus cafes the effect disappears. The only thing that remains is a weak, borde
 buy coffee on *fewer days* in the luteal phase (about 6 percentage points, scenario 10), which I
 would not call a finding. The honest conclusion: **no robust cycle effect on spending in my data.**
 
+![cafe robustness](figures/06_cafe_robustness.png)
+
+*Reading the plot: each dot is the average luteal-minus-follicular difference in cafe spend; the line is its 95% confidence interval. When a line crosses 0 (the vertical black line), I cannot rule out "no difference". The top two rows are the original result; the rows below add one correction each.*
+
 ![pre-period](figures/05_pre_period_curve.png)
+
+*Spending in the 14 days before a period. It is noisy and shows no clear ramp-up.*
 
 | Table | File |
 |---|---|
 | Phase means | `data/aggregated/phase_summary.csv` |
 | Luteal vs follicular tests | `data/aggregated/luteal_vs_follicular_tests.csv` |
 | Detrended robustness | `data/aggregated/robustness_detrended.csv` |
-| Cafe robustness (11 scenarios) | `data/aggregated/cafe_robustness.csv` |
+| Cafe robustness (11 scenarios) | `data/aggregated/cafe_robustness.csv` (plot: `figures/06_cafe_robustness.png`) |
 | One row per cycle | `data/aggregated/cycle_level_means.csv` |
+
+## Conclusion
+| Hypothesis | What I found | Verdict |
+|---|---|---|
+| H1: more discretionary spending in the luteal phase | 831 vs 662 TL/day and higher in 9 of 12 cycles, but the 95% CI includes 0 and my two tests disagree | Not supported (inconclusive) |
+| H2: more late-night purchases in the luteal phase | 0.63 vs 0.57 per day, p = 0.4-0.6 | Not supported |
+| H3: food delivery / cafe differ by phase | Delivery: no difference. Cafe: lower in the luteal phase at first, but the effect fades after removing a few outlier days, the gap between terms and weekends | Not supported (the lead is fragile) |
+
+**In plain words:** in one year of my own data I found **no reliable sign that my spending follows my menstrual
+cycle**. The one pattern that looked real was produced by my calendar (a gap between terms, a few
+unusual days), not by my cycle. So at least for me, spending seems to depend more on *where I am and what
+my week looks like* than on *which phase I am in*.
+
+**What I learned**
+- A single "significant" result among many tests is a lead, not a finding; I only believed it after trying to break it.
+- With repeated cycles the unit of analysis is the *cycle* (n = 12), not the day (n = 348); treating days as independent would have overstated my confidence.
+- Real personal data is messy: transfers are not spending, merchants need cleaning, and phases have to be estimated.
+
+**What I would do next**
+- Collect more cycles (a second year) and add ovulation tests instead of calendar estimates.
+- Track daily screen time and mood prospectively (it cannot be exported backwards on an iPhone), to look at impulses rather than only payments.
+- Use itemised receipts (e.g. online orders) so "discretionary" is measured, not guessed from merchant names.
 
 ## Honest limitations
 - **Small n:** 12 cycles, one person. Nothing here generalises.
